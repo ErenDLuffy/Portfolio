@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <style>
         :root {
-            --bg-color: #000000;
+            --bg-color: #030305;
             --text-color: #f5f5f7;
-            --accent-glow: rgba(255, 255, 255, 0.03);
+            --accent-purple: #7928ca;
+            --accent-cyan: #00dfd8;
+            --accent-pink: #ff0055;
             --transition-speed: 0.8s;
         }
 
@@ -25,7 +27,41 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
-            transition: background-color var(--transition-speed) ease;
+            transition: background-color var(--transition-speed) cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Interactive Dynamic Background Glows */
+        .ambient-glows {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+            opacity: 0.6;
+            transition: opacity 1s ease;
+        }
+
+        .glow-1 {
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(121, 40, 202, 0.25) 0%, transparent 70%);
+            filter: blur(80px);
+        }
+
+        .glow-2 {
+            position: absolute;
+            bottom: -10%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 223, 216, 0.2) 0%, transparent 70%);
+            filter: blur(80px);
         }
 
         /* Apple Style Hero Header */
@@ -37,23 +73,25 @@
             align-items: center;
             text-align: center;
             position: relative;
-            background: radial-gradient(circle at center, #111 0%, #000 100%);
+            z-index: 1;
+            background: radial-gradient(circle at center, rgba(10,10,15,0.4) 0%, #000 100%);
         }
 
         .hero-title {
-            font-size: 5.5rem;
-            font-weight: 800;
+            font-size: 6.5rem;
+            font-weight: 900;
             letter-spacing: -3px;
-            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 70%, var(--accent-purple) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
         }
 
         .hero-subtitle {
             font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 6px;
-            color: #86868b;
+            letter-spacing: 8px;
+            color: #a1a1a6;
             margin-top: 15px;
         }
 
@@ -62,30 +100,32 @@
             position: fixed;
             top: 0;
             left: 0;
-            height: 3px;
-            background: #ffffff;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-cyan));
             width: 0%;
             z-index: 1000;
             transition: width 0.1s ease;
         }
 
-        /* Interactive Showcase Architecture */
+        /* Showcase Architecture */
         .showcase-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 40px;
+            position: relative;
+            z-index: 1;
         }
 
         .showcase-row {
-            min-height: 90vh;
+            min-height: 95vh;
             display: grid;
-            grid-template-columns: 1.2fr 1fr;
+            grid-template-columns: 1.3fr 1fr;
             gap: 80px;
             align-items: center;
-            padding: 100px 0;
+            padding: 120px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(60px);
             transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
@@ -94,76 +134,115 @@
             transform: translateY(0);
         }
 
-        /* Media Frame Settings */
+        /* Enhanced Image Frame & Apple Effects */
         .image-frame {
             position: relative;
-            border-radius: 18px;
+            border-radius: 24px;
             overflow: hidden;
-            background: #0d0d11;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            background: #09090d;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 
+                        0 0 40px rgba(255, 255, 255, 0.01);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: transform 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        .image-frame:hover {
-            transform: scale(1.015);
+        /* Reveal shimmer mask across images on row activation */
+        .image-frame::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transform: skewX(-25deg);
+            transition: none;
+        }
+
+        .showcase-row.active .image-frame::after {
+            left: 150%;
+            transition: left 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .showcase-row:hover .image-frame {
+            transform: scale(1.02) translateY(-4px);
+            border-color: rgba(0, 223, 216, 0.35);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9), 
+                        0 0 30px rgba(0, 223, 216, 0.15);
         }
 
         .image-frame img {
             width: 100%;
             display: block;
             object-fit: contain;
+            filter: saturate(1.02) contrast(1.02);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Content Text Meta */
+        .showcase-row:hover .image-frame img {
+            transform: scale(1.03);
+        }
+
+        /* Content Text Meta Panels */
         .content-panel {
             padding-right: 20px;
+            transition: transform 0.6s ease;
         }
 
         .content-panel span {
             font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #86868b;
+            letter-spacing: 4px;
+            color: var(--accent-cyan);
+            font-weight: 700;
             display: block;
             margin-bottom: 12px;
         }
 
         .content-panel h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            letter-spacing: -1.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #d1d1d6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .content-panel p {
             font-size: 1.15rem;
-            color: #a1a1a6;
-            line-height: 1.65;
+            color: #b3b3b8;
+            line-height: 1.7;
         }
 
         .content-panel p strong {
             color: #ffffff;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 2px;
         }
 
         /* Immersive Contact Panel */
         .contact-section {
-            padding: 150px 20px;
+            padding: 160px 20px;
             text-align: center;
             background: #000000;
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .contact-title {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: 4rem;
+            font-weight: 900;
             margin-bottom: 20px;
-            letter-spacing: -1px;
+            letter-spacing: -2px;
+            background: linear-gradient(90deg, #fff, var(--accent-cyan), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .contact-subtitle {
-            color: #86868b;
+            color: #a1a1a6;
             margin-bottom: 50px;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
@@ -177,12 +256,13 @@
         }
 
         .btn {
-            padding: 18px 40px;
+            padding: 18px 45px;
             border-radius: 50px;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 1.05rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 1.1rem;
+            letter-spacing: -0.2px;
         }
 
         .btn-email {
@@ -191,58 +271,67 @@
         }
 
         .btn-email:hover {
-            background: #e8e8ed;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(255,255,255,0.15);
+            background: #f5f5f7;
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(255,255,255,0.2);
         }
 
         .btn-whatsapp {
-            background: #25D366;
+            background: linear-gradient(135deg, #25D366 0%, #1ebd51 100%);
             color: #ffffff;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.1);
         }
 
         .btn-whatsapp:hover {
-            background: #20ba56;
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(37, 211, 102, 0.3);
         }
 
         footer {
             text-align: center;
-            padding: 40px 20px;
+            padding: 50px 20px;
             font-size: 0.9rem;
-            color: #424245;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #515154;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
             background: #000000;
+            position: relative;
+            z-index: 1;
         }
 
         /* Responsiveness Fixes */
-        @media (max-width: 992px) {
+        @media (max-width: 1024px) {
             .showcase-row {
                 grid-template-columns: 1fr;
-                gap: 40px;
-                padding: 60px 0;
+                gap: 50px;
+                padding: 80px 0;
             }
-            .content-panel { order: 2; }
+            .content-panel { order: 2; padding-right: 0; }
             .image-frame { order: 1; }
-            .hero-title { font-size: 3.8rem; }
-            .contact-title { font-size: 2.5rem; }
+            .hero-title { font-size: 4.5rem; }
+            .contact-title { font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Scroll tracking bar -->
     <div class="progress-bar" id="progressBar"></div>
 
+    <!-- Background mesh illumination -->
+    <div class="ambient-glows" id="ambientGlows">
+        <div class="glow-1" id="glow1"></div>
+        <div class="glow-2" id="glow2"></div>
+    </div>
+
     <header>
-        <h1 class="hero-title" data-aos="fade-up" data-aos-duration="1200">Aman Poddar</h1>
-        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1200">High-End Retouching Portfolio</p>
+        <h1 class="hero-title" data-aos="zoom-out" data-aos-duration="1400">Aman Poddar</h1>
+        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="400" data-aos-duration="1000">High-End Retouching Portfolio</p>
     </header>
 
     <main class="showcase-container">
 
-        <!-- LAYER 1: before and after. 1  (1).jpg -->
-        <section class="showcase-row" data-bg="#12161a">
+        <!-- LAYER 1 -->
+        <section class="showcase-row" data-bg="#0c121c" data-glow1="#0055ff" data-glow2="#7928ca">
             <div class="image-frame">
                 <img src="images/before and after. 1  (1).jpg" alt="High-End Skin Retouching Demonstration">
             </div>
@@ -253,8 +342,8 @@
             </div>
         </section>
 
-        <!-- LAYER 2: before and after 2  (1).jpg -->
-        <section class="showcase-row" data-bg="#201a15">
+        <!-- LAYER 2 -->
+        <section class="showcase-row" data-bg="#26190f" data-glow1="#ff7700" data-glow2="#ff0055">
             <div class="image-frame">
                 <img src="images/before and after 2  (1).jpg" alt="Studio Color Optimization">
             </div>
@@ -265,8 +354,8 @@
             </div>
         </section>
 
-        <!-- LAYER 3: very low quality image before and after 3  (1).jpg -->
-        <section class="showcase-row" data-bg="#1c1917">
+        <!-- LAYER 3 -->
+        <section class="showcase-row" data-bg="#1d1512" data-glow1="#00dfd8" data-glow2="#5500ff">
             <div class="image-frame">
                 <img src="images/very low quality image before and after 3  (1).jpg" alt="Low-Resolution Asset Reconstruction">
             </div>
@@ -277,8 +366,8 @@
             </div>
         </section>
 
-        <!-- LAYER 4: before and after 4  (1).png -->
-        <section class="showcase-row" data-bg="#16151a">
+        <!-- LAYER 4 -->
+        <section class="showcase-row" data-bg="#140f21" data-glow1="#ff00aa" data-glow2="#00ffaa">
             <div class="image-frame">
                 <img src="images/before and after 4  (1).png" alt="Commercial Portrait Smoothing">
             </div>
@@ -289,8 +378,8 @@
             </div>
         </section>
 
-        <!-- LAYER 5: Before and after 5  (1).jpg -->
-        <section class="showcase-row" data-bg="#1c1a17">
+        <!-- LAYER 5 -->
+        <section class="showcase-row" data-bg="#211d17" data-glow1="#ffd000" data-glow2="#7928ca">
             <div class="image-frame">
                 <img src="images/Before and after 5  (1).jpg" alt="Studio Portrait Finishing and Polishing">
             </div>
@@ -318,52 +407,56 @@
     </footer>
 
     <script>
-        // Initialize basic entry animations
         AOS.init({
             once: true,
-            offset: 100
+            offset: 80
         });
 
-        // Track scroll and manage background colors + scroll-driven layout reveals
         const rows = document.querySelectorAll('.showcase-row');
         const progressBar = document.getElementById('progressBar');
+        const glow1 = document.getElementById('glow1');
+        const glow2 = document.getElementById('glow2');
 
         window.addEventListener('scroll', () => {
-            // Update progress bar at the top
+            // Top Scroll Tracker Progress 
             const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
             const scrollProgress = (window.pageYOffset / scrollTotal) * 100;
             progressBar.style.width = scrollProgress + '%';
 
-            // Intersection/View tracking for background transformations
             let currentActive = null;
             const triggerPoint = window.innerHeight * 0.45;
 
             rows.forEach(row => {
                 const rect = row.getBoundingClientRect();
                 
-                // Add visible class when row scrolls into view
+                // Entrance animation trigger
                 if (rect.top < window.innerHeight * 0.85) {
                     row.classList.add('active');
-                } else {
-                    row.classList.remove('active');
                 }
 
-                // Identify which section is currently taking center-stage
+                // Detect current active row panel center point
                 if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
                     currentActive = row;
                 }
             });
 
-            // Fluidly update global background color based on active asset theme context
+            // Handle background shift and fluid color glow transformations
             if (currentActive) {
-                const targetBg = currentActive.getAttribute('data-bg');
-                document.body.style.backgroundColor = targetBg;
+                document.body.style.backgroundColor = currentActive.getAttribute('data-bg');
+                
+                // Extract unique hex targets from active section data metrics
+                const c1 = currentActive.getAttribute('data-glow1');
+                const c2 = currentActive.getAttribute('data-glow2');
+                
+                glow1.style.background = `radial-gradient(circle, ${c1} 0%, transparent 70%)`;
+                glow2.style.background = `radial-gradient(circle, ${c2} 0%, transparent 70%)`;
             } else if (window.pageYOffset < window.innerHeight * 0.5) {
-                document.body.style.backgroundColor = '#000000';
+                document.body.style.backgroundColor = '#030305';
+                glow1.style.background = `radial-gradient(circle, rgba(121, 40, 202, 0.25) 0%, transparent 70%)`;
+                glow2.style.background = `radial-gradient(circle, rgba(0, 223, 216, 0.2) 0%, transparent 70%)`;
             }
         });
 
-        // Trigger initial check on load
         window.dispatchEvent(new Event('scroll'));
     </script>
 </body>
