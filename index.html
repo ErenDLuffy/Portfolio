@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aman Poddar | Lead Image Editor & Visual Artist</title>
+    <title>Aman Poddar | High-End Image Retoucher & Editor</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
     <style>
         :root {
-            --bg-color: #050508;
+            --bg-color: #000000;
             --text-color: #f5f5f7;
-            --accent-1: #ff0055;
-            --accent-2: #7928ca;
-            --accent-3: #00dfd8;
-            --card-bg: rgba(18, 18, 29, 0.7);
+            --accent-glow: rgba(255, 255, 255, 0.03);
+            --transition-speed: 0.8s;
         }
 
         * {
@@ -27,345 +25,288 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
-            letter-spacing: -0.02em;
+            transition: background-color var(--transition-speed) ease;
         }
 
-        /* Hero Styling */
+        /* Apple Style Hero Header */
         header {
-            height: 75vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             position: relative;
-            background: radial-gradient(circle at 70% 30%, rgba(121, 40, 202, 0.15), transparent 50%),
-                        radial-gradient(circle at 20% 70%, rgba(255, 0, 85, 0.12), transparent 50%);
+            background: radial-gradient(circle at center, #111 0%, #000 100%);
         }
 
         .hero-title {
-            font-size: 6rem;
-            font-weight: 900;
-            text-transform: uppercase;
+            font-size: 5.5rem;
+            font-weight: 800;
             letter-spacing: -3px;
-            background: linear-gradient(to right, var(--accent-1), var(--accent-2), var(--accent-3));
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-subtitle {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             color: #86868b;
             margin-top: 15px;
         }
 
-        /* Container Configuration */
-        .container {
-            max-width: 1240px;
+        /* Scroll Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: #ffffff;
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Interactive Showcase Architecture */
+        .showcase-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
         }
 
-        /* Vertical Layers (2 Images Per Set) */
-        .layer-module {
-            margin-bottom: 100px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 50px;
-        }
-
-        .layer-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 35px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            aspect-ratio: 16 / 9;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 0, 85, 0.3);
-        }
-
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .card:hover img {
-            transform: scale(1.04);
-        }
-
-        /* Descriptions below rows */
-        .layer-description {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 40px;
-            background: linear-gradient(135deg, rgba(20,20,35,0.4), rgba(10,10,15,0.2));
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .layer-meta h4 {
-            font-size: 1.4rem;
-            color: var(--text-color);
-            font-weight: 700;
-        }
-
-        .layer-meta span {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent-3);
-            display: block;
-            margin-top: 5px;
-        }
-
-        .layer-text {
-            color: #a1a1a6;
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-
-        .layer-text strong {
-            color: #fff;
-        }
-
-        /* Workspace / Process Section (Moved to End) */
-        .workspace-section {
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 80px 0;
+        .showcase-row {
+            min-height: 90vh;
             display: grid;
             grid-template-columns: 1.2fr 1fr;
-            gap: 50px;
+            gap: 80px;
             align-items: center;
+            padding: 100px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        .workspace-frame {
+        .showcase-row.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Media Frame Settings */
+        .image-frame {
             position: relative;
-            border-radius: 24px;
+            border-radius: 18px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            background: #0d0d11;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.5s ease;
         }
 
-        .workspace-frame img {
+        .image-frame:hover {
+            transform: scale(1.015);
+        }
+
+        .image-frame img {
             width: 100%;
             display: block;
-            filter: contrast(1.05) brightness(0.95);
+            object-fit: contain;
         }
 
-        .workspace-info h3 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            background: linear-gradient(90deg, #fff, #86868b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* Content Text Meta */
+        .content-panel {
+            padding-right: 20px;
         }
 
-        .workspace-info p {
-            color: #a1a1a6;
-            line-height: 1.7;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-        }
-
-        .skill-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .badge {
-            background: rgba(255,255,255,0.05);
-            padding: 8px 16px;
-            border-radius: 30px;
+        .content-panel span {
             font-size: 0.85rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #e8e8ed;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #86868b;
+            display: block;
+            margin-bottom: 12px;
         }
 
-        /* Contact Section */
+        .content-panel h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .content-panel p {
+            font-size: 1.15rem;
+            color: #a1a1a6;
+            line-height: 1.65;
+        }
+
+        .content-panel p strong {
+            color: #ffffff;
+        }
+
+        /* Immersive Contact Panel */
         .contact-section {
-            background: radial-gradient(circle at 50% 100%, rgba(0, 223, 216, 0.08), transparent 60%);
-            padding: 90px 20px;
+            padding: 150px 20px;
             text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #000000;
         }
 
         .contact-title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             letter-spacing: -1px;
         }
 
         .contact-subtitle {
-            color: #a1a1a6;
-            margin-bottom: 40px;
-            font-size: 1.1rem;
+            color: #86868b;
+            margin-bottom: 50px;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .contact-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 25px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 16px 32px;
+            padding: 18px 40px;
             border-radius: 50px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
         .btn-email {
-            background: #fff;
-            color: #000;
+            background: #ffffff;
+            color: #000000;
         }
 
         .btn-email:hover {
             background: #e8e8ed;
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+            box-shadow: 0 15px 30px rgba(255,255,255,0.15);
         }
 
         .btn-whatsapp {
             background: #25D366;
-            color: #fff;
+            color: #ffffff;
         }
 
         .btn-whatsapp:hover {
             background: #20ba56;
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.2);
         }
 
         footer {
             text-align: center;
             padding: 40px 20px;
-            font-size: 0.85rem;
-            color: #636366;
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.9rem;
+            color: #424245;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #000000;
         }
 
-        /* Responsiveness fixes */
-        @media (max-width: 768px) {
-            .layer-grid { grid-template-columns: 1fr; }
-            .layer-description { grid-template-columns: 1fr; gap: 15px; }
-            .workspace-section { grid-template-columns: 1fr; gap: 40px; }
-            .hero-title { font-size: 3.5rem; }
-            .contact-title { font-size: 2.2rem; }
+        /* Responsiveness Fixes */
+        @media (max-width: 992px) {
+            .showcase-row {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 60px 0;
+            }
+            .content-panel { order: 2; }
+            .image-frame { order: 1; }
+            .hero-title { font-size: 3.8rem; }
+            .contact-title { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
+    <div class="progress-bar" id="progressBar"></div>
+
     <header>
-        <h1 class="hero-title" data-aos="zoom-out" data-aos-duration="1500">Aman Poddar</h1>
-        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="400">Digital Asset & Thumbnail Artist</p>
+        <h1 class="hero-title" data-aos="fade-up" data-aos-duration="1200">Aman Poddar</h1>
+        <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300" data-aos-duration="1200">High-End Retouching Portfolio</p>
     </header>
 
-    <main class="container">
+    <main class="showcase-container">
 
-        <section class="layer-module" data-aos="fade-up">
-            <div class="layer-grid">
-                <div class="card">
-                    <img src="images/edit1.jpg" alt="Visual Asset One">
-                </div>
-                <div class="card">
-                    <img src="images/edit2.jpg" alt="Visual Asset Two">
-                </div>
+        <!-- LAYER 1: before and after. 1  (1).jpg -->
+        <section class="showcase-row" data-bg="#12161a">
+            <div class="image-frame">
+                <img src="images/before and after. 1  (1).jpg" alt="High-End Skin Retouching Demonstration">
             </div>
-            <div class="layer-description">
-                <div class="layer-meta">
-                    <h4>Color Science & Asset Fusion</h4>
-                    <span>Module 01 // Core Controls</span>
-                </div>
-                <div class="layer-text">
-                    Demonstrating advanced mastery over <strong>Color Correction, Contrast Mapping, and Cinematic Grading</strong>. Using custom tone-mapping parameters to establish severe narrative tension, ensuring assets break visual noise seamlessly across modern entertainment platforms.
-                </div>
+            <div class="content-panel">
+                <span>Module 01 // Skin Cleansing</span>
+                <h2>Texture-Safe Micro Dermabrasion</h2>
+                <p>Advanced execution of <strong>Frequency Separation and manual Cloning & Healing strategies</strong>. Blemishes, discoloration, and structural skin surface anomalies are entirely neutralized while strictly preserving natural skin pores, textures, and critical micro-shadow definitions in compliance with digital imaging rules.</p>
             </div>
         </section>
 
-        <section class="layer-module" data-aos="fade-up">
-            <div class="layer-grid">
-                <div class="card">
-                    <img src="images/edit3.jpg" alt="Visual Asset Three">
-                </div>
-                <div class="card">
-                    <img src="images/edit4.jpg" alt="Visual Asset Four">
-                </div>
+        <!-- LAYER 2: before and after 2  (1).jpg -->
+        <section class="showcase-row" data-bg="#201a15">
+            <div class="image-frame">
+                <img src="images/before and after 2  (1).jpg" alt="Studio Color Optimization">
             </div>
-            <div class="layer-description">
-                <div class="layer-meta">
-                    <h4>Advanced RAW Manipulation</h4>
-                    <span>Module 02 // Precision Tools</span>
-                </div>
-                <div class="layer-text">
-                    Engineered through <strong>Adobe Camera RAW, selective illumination vectors, and exposure balancing</strong>. Features hyper-realistic blending modes that successfully merge destructive, high-saturation explosion elements alongside balanced focal subjects.
-                </div>
+            <div class="content-panel">
+                <span>Module 02 // Environment Tuning</span>
+                <h2>Dynamic Background Replacement & Lighting</h2>
+                <p>Complete background isolation utilizing pristine <strong>Clipping Paths and meticulous extraction workflows</strong>. Studio canvas backdrops are replaced with color-graded ambient layers. Subject contours are re-lit through targeted dodge-and-burn passes to sit organically within the new studio workspace layout.</p>
             </div>
         </section>
 
-        <section class="layer-module" data-aos="fade-up">
-            <div class="layer-grid">
-                <div class="card">
-                    <img src="images/edit5.jpg" alt="Visual Asset Five">
-                </div>
-                <div class="card">
-                    <img src="images/edit6.jpg" alt="Visual Asset Six">
-                </div>
+        <!-- LAYER 3: very low quality image before and after 3  (1).jpg -->
+        <section class="showcase-row" data-bg="#1c1917">
+            <div class="image-frame">
+                <img src="images/very low quality image before and after 3  (1).jpg" alt="Low-Resolution Asset Reconstruction">
             </div>
-            <div class="layer-description">
-                <div class="layer-meta">
-                    <h4>Layer Architecture & Extraction</h4>
-                    <span>Module 03 // Production Design</span>
-                </div>
-                <div class="layer-text">
-                    Utilizing flawless <strong>Clipping Paths, refined hair masking, and clean subject background replacements</strong>. Complex multiperson canvas groups are organized strictly within standard production guidelines, using dynamic structural depth to balance text weight with graphics.
-                </div>
+            <div class="content-panel">
+                <span>Module 03 // Asset Recovery</span>
+                <h2>High-End Beauty Retouching & Realignment</h2>
+                <p>Engineered to handle complex image recovery requirements. Demonstrates precise optimization for commercial and e-comm brand guidelines by managing <strong>selective masking and non-destructive soft-glaze complexion smoothing</strong> to eliminate artifacts while stabilizing color reproduction.</p>
             </div>
         </section>
 
-        <section class="workspace-section" data-aos="fade-up">
-            <div class="workspace-frame">
-                <img src="images/workspace.jpeg" alt="Aman Editing Setup inside Adobe Photoshop">
+        <!-- LAYER 4: before and after 4  (1).png -->
+        <section class="showcase-row" data-bg="#16151a">
+            <div class="image-frame">
+                <img src="images/before and after 4  (1).png" alt="Commercial Portrait Smoothing">
             </div>
-            <div class="workspace-info">
-                <h3>The Production Pipeline</h3>
-                <p>A peek inside the workspace environment. Translating high-stakes concepts into pixel-perfect marketing assets involves structured layer composition, strict depth mapping, and deliberate focal lighting architectures designed to maximize click-through thresholds.</p>
-                <div class="skill-badges">
-                    <span class="badge">Adobe Photoshop</span>
-                    <span class="badge">Layer Composition</span>
-                    <span class="badge">Brand SOP Alignment</span>
-                    <span class="badge">Deadlines Managed</span>
-                </div>
+            <div class="content-panel">
+                <span>Module 04 // Studio Finishing</span>
+                <h2>High-Definition Texture & Tone Balancing</h2>
+                <p>Strategic skin tone balancing implemented across high-definition portrait frames. Leveraging <strong>Adobe Camera RAW and selective luminosity masks</strong> to resolve macro-level surface redness and structural shadows without introducing artificial blur or destroying natural skin tones.</p>
+            </div>
+        </section>
+
+        <!-- LAYER 5: Before and after 5  (1).jpg -->
+        <section class="showcase-row" data-bg="#1c1a17">
+            <div class="image-frame">
+                <img src="images/Before and after 5  (1).jpg" alt="Studio Portrait Finishing and Polishing">
+            </div>
+            <div class="content-panel">
+                <span>Module 05 // Precision Mastery</span>
+                <h2>E-Comm Polish & Structural Liquify</h2>
+                <p>Fulfilling rigorous brand SOPs via seamless <strong>layer manipulation, digital polishing, and subtle geometric balancing</strong>. Employs advanced micro-retouching to remove minor skin imperfections while maintaining authentic focal contrast ratios across all channels.</p>
             </div>
         </section>
 
     </main>
 
-    <section class="contact-section" id="contact" data-aos="fade-up">
-        <h2 class="contact-title">Let's Create Something Iconic</h2>
-        <p class="contact-subtitle">Available for high-turnaround thumbnail design contracts and premium asset editing operations.</p>
+    <!-- Interactive Contact Zone -->
+    <section class="contact-section" id="contact">
+        <h2 class="contact-title">Initiate Premium Production</h2>
+        <p class="contact-subtitle">Available for specialized high-volume retouching retainers, agency contracts, and elite brand media projects.</p>
         <div class="contact-buttons">
             <a href="mailto:poddaraman172005@gmail.com" class="btn btn-email">Email Me</a>
             <a href="https://wa.me/919136582094" target="_blank" class="btn btn-whatsapp">Connect on WhatsApp</a>
@@ -373,15 +314,57 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Aman Poddar. Optimized for high-impact media delivery.</p>
+        <p>&copy; 2026 Aman Poddar. Engineered for high-fidelity performance.</p>
     </footer>
 
     <script>
+        // Initialize basic entry animations
         AOS.init({
-            duration: 1000,
             once: true,
             offset: 100
         });
+
+        // Track scroll and manage background colors + scroll-driven layout reveals
+        const rows = document.querySelectorAll('.showcase-row');
+        const progressBar = document.getElementById('progressBar');
+
+        window.addEventListener('scroll', () => {
+            // Update progress bar at the top
+            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = (window.pageYOffset / scrollTotal) * 100;
+            progressBar.style.width = scrollProgress + '%';
+
+            // Intersection/View tracking for background transformations
+            let currentActive = null;
+            const triggerPoint = window.innerHeight * 0.45;
+
+            rows.forEach(row => {
+                const rect = row.getBoundingClientRect();
+                
+                // Add visible class when row scrolls into view
+                if (rect.top < window.innerHeight * 0.85) {
+                    row.classList.add('active');
+                } else {
+                    row.classList.remove('active');
+                }
+
+                // Identify which section is currently taking center-stage
+                if (rect.top <= triggerPoint && rect.bottom >= triggerPoint) {
+                    currentActive = row;
+                }
+            });
+
+            // Fluidly update global background color based on active asset theme context
+            if (currentActive) {
+                const targetBg = currentActive.getAttribute('data-bg');
+                document.body.style.backgroundColor = targetBg;
+            } else if (window.pageYOffset < window.innerHeight * 0.5) {
+                document.body.style.backgroundColor = '#000000';
+            }
+        });
+
+        // Trigger initial check on load
+        window.dispatchEvent(new Event('scroll'));
     </script>
 </body>
 </html>
